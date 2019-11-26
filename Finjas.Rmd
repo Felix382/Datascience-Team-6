@@ -72,17 +72,22 @@ merger2%>%
 
 ```{r}
 
-wetter <- read_csv("2/wetter.csv")
+wetter <- read_csv("data/wetter.csv")
 View(wetter)
 
 
-#Relevant: Temperatur, (Bewölkung)
-#Irrelevant: Windgeschwindigkeit, Wettercode (gibt Regen/Niesel etc. an), (zu viele NAs um das zu verwenden)
+#Relevant: Temperatur, Bewölkung
+#Irrelevant: Windgeschwindigkeit, Wettercode zu viele NAs
 
 #Monatsdurchschnittstemperatur
 
 #Dummy for month and then average of the month, but the years cross
-#seven before and after the observation, dont know the code
+#seven days before and after the observation, dont know the code
+
+library (pracma)
+
+movavg(wetter$Temperatur, 7, type=c("s"))
+
 
 
 ```
