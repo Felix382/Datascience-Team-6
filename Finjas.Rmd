@@ -21,7 +21,7 @@ kiwo<- read_csv("data/kiwo.csv")
 merger<-left_join(umsatzdaten,kiwo)
 View (merger)
 
-Zeiten <- read_excel("/Zeiten.xlsx")
+Zeiten <- read_excel("Zeiten.xlsx")
 View(Zeiten)
 
 Zeiten <- Zeiten %>% 
@@ -38,6 +38,21 @@ View(merger2)
 merger2[is.na(merger2)]<-0
 
 View(merger2)
+
+
+feiertage <- read_csv("data/feiertage.csv")
+
+
+View(feiertage)
+
+
+merger3<-left_join(merger2,feiertage)
+View(merger3)
+
+merger3[is.na(merger3)]<-0
+
+View(merger3)
+
 
 ```
 
