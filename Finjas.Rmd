@@ -1,0 +1,73 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library(readr)
+library(lubridate)
+library(ggplot2)
+library(dplyr)
+library(readxl)
+
+umsatzdaten <- read_csv("2/umsatzdaten_gekuerzt.csv")
+kiwo<- read_csv("Projekt/kiwo.csv")
+
+merger<-left_join(umsatzdaten,kiwo)
+View (merger)
+
+Zeiten <- read_excel("Projekt/Zeiten.xlsx")
+View(Zeiten)
+
+Zeiten <- Zeiten %>% 
+mutate(Datum = as.Date(Datum)) 
+
+merger <- merger %>% 
+mutate(Datum = as.Date(Datum)) 
+
+
+
+merger2<-left_join(merger,Zeiten, by='Datum')
+View(merger2)
+
+merger2[is.na(merger2)]<-0
+
+View(merger2)
+
+```
+
+```{r}
+# Berechnung der Wochentage
+merger2$wochentag <- weekdays(merger2$Datum)
+View(merger2)
+
+#Dummy für Wochentage, Stena Line fährt jeden Tag
+
+merger2%>%
+ mutate(Dummy = ifelse(wochentag=='Dienstag', "1", "0"))
+
+
+```
+
+
+```{r}
+
+wetter <- read_csv("2/wetter.csv")
+View(wetter)
+
+
+#Relevant: Temperatur, (Bewölkung)
+#Irrelevant: Windgeschwindigkeit, Wettercode (gibt Regen/Niesel etc. an), (zu viele NAs um das zu verwenden)
+
+#Monatsdurchschnittstemperatur
+
+#Dummy for month and then average of the month, but the years cross
+#seven before and after the observation, dont know the code
+
+
+```
