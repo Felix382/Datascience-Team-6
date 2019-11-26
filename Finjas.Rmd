@@ -15,13 +15,13 @@ library(ggplot2)
 library(dplyr)
 library(readxl)
 
-umsatzdaten <- read_csv("2/umsatzdaten_gekuerzt.csv")
-kiwo<- read_csv("Projekt/kiwo.csv")
+umsatzdaten <- read_csv("data/umsatzdaten_gekuerzt.csv")
+kiwo<- read_csv("data/kiwo.csv")
 
 merger<-left_join(umsatzdaten,kiwo)
 View (merger)
 
-Zeiten <- read_excel("Projekt/Zeiten.xlsx")
+Zeiten <- read_excel("/Zeiten.xlsx")
 View(Zeiten)
 
 Zeiten <- Zeiten %>% 
