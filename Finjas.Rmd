@@ -19,10 +19,10 @@ umsatzdaten <- read_csv("data/umsatzdaten_gekuerzt.csv")
 kiwo<- read_csv("data/kiwo.csv")
 
 merger<-left_join(umsatzdaten,kiwo)
-View (merger)
+#View (merger)
 
 Zeiten <- read_excel("Zeiten.xlsx")
-View(Zeiten)
+#View(Zeiten)
 
 Zeiten <- Zeiten %>% 
 mutate(Datum = as.Date(Datum)) 
@@ -37,13 +37,16 @@ View(merger2)
 
 merger2[is.na(merger2)]<-0
 
+merger2$wochentag <- weekdays(merger2$Datum)
 View(merger2)
+
+#View(merger2)
 
 
 feiertage <- read_csv("data/feiertage.csv")
 
 
-View(feiertage)
+#View(feiertage)
 
 
 merger3<-left_join(merger2,feiertage)
@@ -56,24 +59,15 @@ View(merger3)
 
 ```
 
-```{r}
-# Berechnung der Wochentage
-merger2$wochentag <- weekdays(merger2$Datum)
-View(merger2)
-
-#Dummy für Wochentage, Stena Line fährt jeden Tag
-
-merger2%>%
- mutate(Dummy = ifelse(wochentag=='Dienstag', "1", "0"))
-
-
-```
-
 
 ```{r}
 
 wetter <- read_csv("data/wetter.csv")
-View(wetter)
+#View(wetter)
+
+final<-left_join(merger3,wetter)
+
+View(final)
 
 
 #Relevant: Temperatur, Bewölkung
@@ -83,6 +77,18 @@ View(wetter)
 
 #Dummy for month and then average of the month, but the years cross
 #seven days before and after the observation, dont know the code
+
+
+```
+
+
+```{r}
+
+#Dummy für Wochentage, Stena Line fährt jeden Tag
+
+final%>%
+mutate(Dummy = ifelse(wochentag=='Dienstag', "1", "0"))
+
 
 library (pracma)
 
