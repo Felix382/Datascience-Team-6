@@ -21,9 +21,9 @@ kiwo<- read_csv("data/kiwo.csv")
 feiertage <- read_csv("data/feiertage.csv")
 Zeiten <- read_excel("Zeiten.xlsx")
 feiertage <- read_csv("data/feiertage.csv")
-Niederschlag <- read_csv("data/Niederschlag ja-nein.csv")
-Niederschlagsmenge <- read_csv("data/Niederschlagsmenge.csv")
-Sonnenscheindauer <- read_csv("data/Sonnenscheindauer.csv")
+wetter <- read_csv("data/wetter.csv")
+Dummy_Feiertag<- read_excel("data/Vor_Nachfeiertage.xlsx")
+View(Dummy_Feiertag)
 
 merger<-left_join(umsatzdaten,kiwo)
 Zeiten <- Zeiten %>% 
@@ -35,46 +35,29 @@ merger2[is.na(merger2)]<-0
 merger2$wochentag <- weekdays(merger2$Datum)
 merger3<-left_join(merger2,feiertage)
 merger3[is.na(merger3)]<-0
-merger1_1<-left_join(Niederschlagsmenge,Niederschlag)
-merger1_2<-left_join(merger1_1, Sonnenscheindauer)
+Dummy_Feiertag <- Dummy_Feiertag %>% mutate(Datum = as.Date(Datum)) 
+merger4<-left_join(merger3,Dummy_Feiertag)
+final<-left_join(merger4, wetter)
 
-View(merger1_2)
-
-```
-
-
-```{r}
-
-wetter <- read_csv("data/wetter.csv")
-#View(wetter)
-
-final<-left_join(merger3,wetter)
-
+#merger5<-left_join(merger4,)
+#final<-left_join(merger4, merger1_2)
 View(final)
 
-
-#Relevant: Temperatur, Bewölkung
-#Irrelevant: Windgeschwindigkeit, Wettercode zu viele NAs
-
-#Monatsdurchschnittstemperatur
-
-#Dummy for month and then average of the month, but the years cross
-#seven days before and after the observation, dont know the code
-
-
+#write.csv2(final, "dateiname.csv")
 ```
 
 
 ```{r}
-
 #Dummy für Wochentage, Stena Line fährt jeden Tag
 
 final%>%
 mutate(Dummy = ifelse(wochentag=='Dienstag', "1", "0"))
 
-movavg(wetter$Temperatur, 7, type=c("s"))
+final%>%
+lag(feiertage, k=1)
+  
 
-
+movag<-movavg(wetter$Temperatur, 7, type=c("s"))
 
 ```
 
@@ -105,12 +88,11 @@ plot_warengruppe(1)
 ```
 
 Sollten einen Dummy für vor oder nach Feiertag nehmen, Tage vor dem eigentlichen verkauf mit reinnehmen
+
 Lineare Regression
 ```{r}
-#View(final)
-mod<- lm(Umsatz~KielerWoche+ Ferien+ wochentag + Holidays + Temperatur+as.factor(Warengruppe), final)
+mod<- lm(Umsatz~KielerWoche+ Ferien+ wochentag + Holidays + Temperatur+as.factor(Warengruppe)+ Bewoelkung+ Vor+ Nach,final)
 summary(mod)
-
 
 ```
 
