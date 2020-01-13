@@ -18,52 +18,26 @@ library (pracma)
 
 umsatzdaten <- read_csv("data/umsatzdaten_gekuerzt.csv")
 kiwo<- read_csv("data/kiwo.csv")
-
-merger<-left_join(umsatzdaten,kiwo)
-#View (merger)
-
-Zeiten <- read_excel("Zeiten.xlsx")
-#View(Zeiten)
-
-Zeiten <- Zeiten %>% 
-mutate(Datum = as.Date(Datum)) 
-
-merger <- merger %>% 
-mutate(Datum = as.Date(Datum)) 
-
-
-
-merger2<-left_join(merger,Zeiten, by='Datum')
-View(merger2)
-
-merger2[is.na(merger2)]<-0
-
-merger2$wochentag <- weekdays(merger2$Datum)
-View(merger2)
-
-#View(merger2)
-
-
 feiertage <- read_csv("data/feiertage.csv")
-
-
-#View(feiertage)
-
-
-merger3<-left_join(merger2,feiertage)
-View(merger3)
-
-merger3[is.na(merger3)]<-0
-
-View(merger3)
-
-
+Zeiten <- read_excel("Zeiten.xlsx")
+feiertage <- read_csv("data/feiertage.csv")
 Niederschlag <- read_csv("data/Niederschlag ja-nein.csv")
 Niederschlagsmenge <- read_csv("data/Niederschlagsmenge.csv")
 Sonnenscheindauer <- read_csv("data/Sonnenscheindauer.csv")
 
+merger<-left_join(umsatzdaten,kiwo)
+Zeiten <- Zeiten %>% 
+mutate(Datum = as.Date(Datum)) 
+merger <- merger %>% 
+mutate(Datum = as.Date(Datum)) 
+merger2<-left_join(merger,Zeiten, by='Datum')
+merger2[is.na(merger2)]<-0
+merger2$wochentag <- weekdays(merger2$Datum)
+merger3<-left_join(merger2,feiertage)
+merger3[is.na(merger3)]<-0
 merger1_1<-left_join(Niederschlagsmenge,Niederschlag)
 merger1_2<-left_join(merger1_1, Sonnenscheindauer)
+
 View(merger1_2)
 
 ```
