@@ -59,6 +59,20 @@ lag(feiertage, k=1)
 
 movag<-movavg(wetter$Temperatur, 7, type=c("s"))
 
+
+####UNDER CONSTRUCTION####
+#Moving Average
+# Function ma() calculates the moving average of order n
+ma <- function(x, n = 7) { filter(x, rep(1/n,n), sides = 7, method = "convolution") }
+
+for (Datum in final) {
+  
+}
+
+movingaverage <- data.frame(final$Datum, "Moving Average")
+# Calculate moving averages of order 7
+ma7 <- ma(final$Umsatz, 7)
+
 ```
 
 ```{r}
