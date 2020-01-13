@@ -13,7 +13,8 @@ library(readr)
 library(lubridate)
 library(ggplot2)
 library(dplyr)
-library(readxl)
+library(leaps)
+library (pracma)
 
 umsatzdaten <- read_csv("data/umsatzdaten_gekuerzt.csv")
 kiwo<- read_csv("data/kiwo.csv")
@@ -57,6 +58,14 @@ merger3[is.na(merger3)]<-0
 View(merger3)
 
 
+Niederschlag <- read_csv("data/Niederschlag ja-nein.csv")
+Niederschlagsmenge <- read_csv("data/Niederschlagsmenge.csv")
+Sonnenscheindauer <- read_csv("data/Sonnenscheindauer.csv")
+
+merger1_1<-left_join(Niederschlagsmenge,Niederschlag)
+merger1_2<-left_join(merger1_1, Sonnenscheindauer)
+View(merger1_2)
+
 ```
 
 
@@ -88,9 +97,6 @@ View(final)
 
 final%>%
 mutate(Dummy = ifelse(wochentag=='Dienstag', "1", "0"))
-
-
-library (pracma)
 
 movavg(wetter$Temperatur, 7, type=c("s"))
 
@@ -124,16 +130,22 @@ plot_warengruppe(1)
 
 ```
 
-
+Sollten einen Dummy für vor oder nach Feiertag nehmen, Tage vor dem eigentlichen verkauf mit reinnehmen
 Lineare Regression
 ```{r}
-View(final)
-mod<- lm(Umsatz~., final)
+#View(final)
+mod<- lm(Umsatz~KielerWoche+ Ferien+ wochentag + Holidays + Temperatur+as.factor(Warengruppe), final)
 summary(mod)
+
 
 ```
 
-Sollten einen Dummy für vor oder nach Feiertag nehmen, Tage vor dem eigentlichen verkauf mit reinnehmen 
 
 
+Subsets
+```{r}
+y <- regsubsets(Umsatz ~ ., final, nvmax=10)
+summary(y)
+
+```
 
