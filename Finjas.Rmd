@@ -123,3 +123,17 @@ plot_warengruppe <- function(WG) {
 plot_warengruppe(1)
 
 ```
+
+
+Lineare Regression
+```{r}
+View(final)
+mod<- lm(Umsatz~., final)
+summary(mod)
+
+```
+
+Sollten einen Dummy für vor oder nach Feiertag nehmen, Tage vor dem eigentlichen verkauf mit reinnehmen 
+
+
+
