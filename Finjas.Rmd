@@ -20,10 +20,9 @@ library(readxl)
 umsatzdaten <- read_csv("data/umsatzdaten_gekuerzt.csv")
 kiwo<- read_csv("data/kiwo.csv")
 feiertage <- read_csv("data/feiertage.csv")
-Zeiten <- read_excel("Zeiten.xlsx")
+Zeiten <- read_excel("data/Zeiten.xlsx")
 feiertage <- read_csv("data/feiertage.csv")
 wetter <- read_csv("data/wetter.csv")
-Dummy_Feiertag<- read_excel("data/Vor_Nachfeiertage.xlsx")
 
 merger<-left_join(umsatzdaten,kiwo)
 Zeiten <- Zeiten %>% 
@@ -36,8 +35,7 @@ merger2$wochentag <- weekdays(merger2$Datum)
 merger3<-left_join(merger2,feiertage)
 merger3[is.na(merger3)]<-0
 Dummy_Feiertag <- Dummy_Feiertag %>% mutate(Datum = as.Date(Datum)) 
-merger4<-left_join(merger3,Dummy_Feiertag)
-final<-left_join(merger4, wetter)
+final<-left_join (merger3, wetter)
 
 #merger5<-left_join(merger4,)
 #final<-left_join(merger4, merger1_2)
@@ -105,7 +103,7 @@ Sollten einen Dummy für vor oder nach Feiertag nehmen, Tage vor dem eigentliche
 
 Lineare Regression
 ```{r}
-mod<- lm(Umsatz~KielerWoche+ Ferien+ wochentag + Holidays + Temperatur+as.factor(Warengruppe)+ Bewoelkung+ Vor+ Nach,final)
+mod<- lm(Umsatz~KielerWoche+ Ferien+ wochentag + Feiertag + Temperatur+as.factor(Warengruppe)+ Bewoelkung+ Vor+ Nach,final)
 summary(mod)
 
 ```
