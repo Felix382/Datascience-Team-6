@@ -15,6 +15,7 @@ library(ggplot2)
 library(dplyr)
 library(leaps)
 library (pracma)
+library(readxl)
 
 umsatzdaten <- read_csv("data/umsatzdaten_gekuerzt.csv")
 kiwo<- read_csv("data/kiwo.csv")
@@ -23,7 +24,6 @@ Zeiten <- read_excel("Zeiten.xlsx")
 feiertage <- read_csv("data/feiertage.csv")
 wetter <- read_csv("data/wetter.csv")
 Dummy_Feiertag<- read_excel("data/Vor_Nachfeiertage.xlsx")
-View(Dummy_Feiertag)
 
 merger<-left_join(umsatzdaten,kiwo)
 Zeiten <- Zeiten %>% 
