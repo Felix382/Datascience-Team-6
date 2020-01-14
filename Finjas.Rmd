@@ -45,6 +45,7 @@ View(final)
 ```
 
 
+
 ```{r}
 #Dummy für Wochentage, Stena Line fährt jeden Tag
 
@@ -73,6 +74,7 @@ ma7 <- ma(final$Umsatz, 7)
 
 ```
 
+Balkendiagramm Beispiel 
 ```{r}
 plot_warengruppe <- function(WG) {
   
