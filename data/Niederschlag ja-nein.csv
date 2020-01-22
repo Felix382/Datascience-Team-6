@@ -1,4 +1,4 @@
-"Produkt_Code","SDO_ID","Zeitstempel","Wert","Qualitaet_Niveau","Qualitaet_Byte"
+"Produkt_Code","SDO_ID","Datum","Niederschlag","Qualitaet_Niveau","Qualitaet_Byte"
 "SDK_MN004","2564","2013-07-01","6","3","0"
 "SDK_MN004","2564","2013-07-02","8.5","3","0"
 "SDK_MN004","2564","2013-07-03","2","3","0"

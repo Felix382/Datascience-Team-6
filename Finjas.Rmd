@@ -23,6 +23,9 @@ feiertage <- read_csv("data/feiertage.csv")
 Zeiten <- read_excel("data/Zeiten.xlsx")
 feiertage <- read_csv("data/feiertage.csv")
 wetter <- read_csv("data/wetter.csv")
+niederschlag <- read_csv("data/Niederschlag ja-nein.csv")
+niederschlagsmenge <- read_csv("data/Niederschlagsmenge.csv")
+sonnenschein <- read_csv("data/Sonnenscheindauer.csv")
 
 merger<-left_join(umsatzdaten,kiwo)
 Zeiten <- Zeiten %>% 
@@ -34,6 +37,11 @@ merger2[is.na(merger2)]<-0
 merger2$wochentag <- weekdays(merger2$Datum)
 merger3<-left_join(merger2,feiertage)
 merger3[is.na(merger3)]<-0
+merger4<-left_join(merger3, niederschlag, by='Datum')
+merger5<-left_join(merger4, niederschlagsmenge, by='Datum')
+merger6<-left_join(merger5, sonnenschein, by='Datum')
+
+
 Dummy_Feiertag <- Dummy_Feiertag %>% mutate(Datum = as.Date(Datum)) 
 final<-left_join (merger3, wetter)
 
