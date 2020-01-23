@@ -40,7 +40,7 @@ merger4<-left_join(merger3, niederschlagsmenge, by='Datum')
 merger5<-left_join(merger4, sonnenschein, by='Datum')
 
 
-Dummy_Feiertag <- Dummy_Feiertag %>% mutate(Datum = as.Date(Datum)) 
+ 
 final<-left_join (merger5, wetter)
 
 #merger5<-left_join(merger4,)
@@ -82,28 +82,77 @@ ma7 <- ma(final$Umsatz, 7)
 
 Balkendiagramm Beispiel 
 ```{r}
-plot_warengruppe <- function(WG) {
-  
-  umsatzWGMo <- c(umsatz[Warengruppe == WG & wday(ymd(Datum)) == 1]$Umsatz)
-  umsatzWGDi <- c(umsatz[Warengruppe == WG & wday(ymd(Datum)) == 2]$Umsatz)
-  umsatzWGMi <- c(umsatz[Warengruppe == WG & wday(ymd(Datum)) == 3]$Umsatz)
-  umsatzWGDo <- c(umsatz[Warengruppe == WG & wday(ymd(Datum)) == 4]$Umsatz)
-  umsatzWGFr <- c(umsatz[Warengruppe == WG & wday(ymd(Datum)) == 5]$Umsatz)
-  umsatzWGSa <- c(umsatz[Warengruppe == WG & wday(ymd(Datum)) == 6]$Umsatz)
-  umsatzWGSo <- c(umsatz[Warengruppe == WG & wday(ymd(Datum)) == 7]$Umsatz)
-  data <- data.frame(
-    WG1 = c("Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"),
-    value = c(mean(umsatzWGMo), mean(umsatzWGDi), mean(umsatzWGMi), mean(umsatzWGDo), mean(umsatzWGFr), mean(umsatzWGSa), mean(umsatzWGSo)),
-    sd = c(sd(umsatzWGMo), sd(umsatzWGDi) , sd(umsatzWGMi) , sd(umsatzWGDo) , sd(umsatzWGFr) , sd(umsatzWGSa), sd(umsatzWGSo))
-  )
-  
-  ggplot(data) + 
-    geom_bar( aes(x = WG1, y = value), stat="identity", fill="skyblue", alpha=0.7) +
-    geom_errorbar( aes(x = WG1, ymin = value - sd, ymax = value + sd), width = 0.4, colour ="orange", alpha= 0.9, size = 1.3) + 
-    scale_x_discrete(paste("Warengruppe ", WG))
-}
+wetter <- read_csv("data/wetter.csv")
+sonne <- read_csv("data/Sonnenscheindauer.csv")
 
-plot_warengruppe(1)
+View (wetter)
+View(sonne)
+
+```
+
+
+
+```{r}
+wetter$month<-month(as.POSIXlt(wetter$Datum, format="%d/%m/%Y"))
+
+wetter$Monate<-month.abb[wetter$month]
+
+wetter$Monate <- factor(wetter$Monate, levels=c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dezc"))
+View (wetter)
+
+```
+
+
+
+```{r}
+sonne$month<-month(as.POSIXlt(sonne$Datum, format="%d/%m/%Y"))
+
+sonne$Monate<-month.abb[sonne$month]
+
+sonne$Monate <- factor(sonne$Monate, levels=c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+View (sonne)
+
+```
+
+
+```{r}
+my_sum <- wetter %>%
+  group_by(Monate) %>%
+  summarise(
+    n=n(),
+    mean=mean(Temperatur),
+    sd=sd(Temperatur)
+  ) %>%
+  mutate( se=sd/sqrt(n))  %>%
+  mutate( ic=se * qt((1-0.05)/2 + .5, n-1))
+
+# Confidence Interval
+ggplot(my_sum) +
+  geom_bar( aes(x=Monate, y=mean), stat="identity", fill="forestgreen", alpha=0.5) +
+  geom_errorbar( aes(x=Monate, ymin=mean-ic, ymax=mean+ic), width=0.4, colour="orange", alpha=0.9, size=1.5) +
+  ggtitle("Durchschnittliche Monatstemperatur")
+
+```
+
+
+```{r}
+my_sum <- sonne %>%
+  group_by(Monate) %>%
+  summarise(
+    n=n(),
+    mean=mean(Sonnenscheindauer),
+    sd=sd(Sonnenscheindauer)
+  ) %>%
+  mutate( se=sd/sqrt(n))  %>%
+  mutate( ic=se * qt((1-0.05)/2 + .5, n-1))
+
+# Confidence Interval
+ggplot(my_sum) +
+  geom_bar( aes(x=Monate, y=mean), stat="identity", fill="forestgreen", alpha=0.5) +
+  geom_errorbar( aes(x=Monate, ymin=mean-ic, ymax=mean+ic), width=0.4, colour="orange", alpha=0.9, size=1.5) +
+  ggtitle("Durchschnittliche Sonnenscheindauer")
+
+```
 
 ```
 
