@@ -97,7 +97,7 @@ wetter$month<-month(as.POSIXlt(wetter$Datum, format="%d/%m/%Y"))
 
 wetter$Monate<-month.abb[wetter$month]
 
-wetter$Monate <- factor(wetter$Monate, levels=c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dezc"))
+wetter$Monate <- factor(wetter$Monate, levels=c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
 View (wetter)
 
 ```
