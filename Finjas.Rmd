@@ -41,7 +41,7 @@ merger5<-left_join(merger4, sonnenschein, by='Datum')
 
 
 Dummy_Feiertag <- Dummy_Feiertag %>% mutate(Datum = as.Date(Datum)) 
-final<-left_join (merger3, wetter)
+final<-left_join (merger5, wetter)
 
 #merger5<-left_join(merger4,)
 #final<-left_join(merger4, merger1_2)
