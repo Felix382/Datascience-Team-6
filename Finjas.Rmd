@@ -235,7 +235,7 @@ get.norm_values <- function (.data, select_columns = NULL) {
   result <- NULL
   for (col_name in select_columns) {
     mean <- mean(.data[[col_name]])
-    sd <- sd(.data[[col_name]])
+    sd <- sd(.data[[col_name]] na.rm = TRUE)
     result <- rbind (result, c(mean, sd))
   }
   result <- as.data.frame(result, stringsAsFactors = FALSE)
@@ -249,11 +249,11 @@ get.norm_values <- function (.data, select_columns = NULL) {
 
 ```{r}
 # Rekodierung von kategoriellen Variablen (zu Dummy-Variablen)
-dummy_list <- c("Warengruppe")
+dummy_list <- c("Warengruppe", "wochentag", "Bewoelkung")
 final_dummy = dummy_cols(final, dummy_list)
 
 # Standardisierung von metrischen Variablen
-norm_list <- c("Umsatz", "Temperatur")
+norm_list <- c('Umsatz', 'Temperatur', 'Sonnenscheindauer', 'Niederschlagsmenge', 'KielerWoche')
 # Berechnung der Mittelwerte und Standardabweichungen der zu standardisierenden Variablen
 norm_values_list <- get.norm_values(final_dummy, norm_list)
 # Standardisierung der angegebenen metrischen Variablen
@@ -261,11 +261,11 @@ final_norm <- norm_cols(final_dummy, norm_values_list)
 
 # Definition von Variablenlisten, um das Arbeiten mit diesen zu erleichtern
 warengruppen_dummies = c('Warengruppe_1', 'Warengruppe_2','Warengruppe_3','Warengruppe_4','Warengruppe_5','Warengruppe_6')
-#wochentage_dummies = c('Wochentag_Sonntag','Wochentag_Montag', 'Wochentag_Dienstag', 'Wochentag_Mittwoch','Wochentag_Donnerstag','Wochentag_Freitag','Wochentag_Samstag')
-#bewoelkung_dummies = c("0","1","2","3","4","5","6","7","8")
+wochentage_dummies = c('wochentag_Sonntag','wochentag_Montag', 'wochentag_Dienstag', 'wochentag_Mittwoch','wochentag_Donnerstag','wochentag_Freitag','wochentag_Samstag')
+Bewoelkung_dummies = c('Bewoelkung_0','Bewoelkung_1','Bewoelkung_2','Bewoelkung_3','Bewoelkung_4','Bewoelkung_5','Bewoelkung_6','Bewoelkung_7','Bewoelkung_8')
 
 # Definition der Features (der unabhängigen Variablen auf deren Basis die Vorhersagen erzeugt werden sollen)
-features = c('Umsatz_norm', 'Temperatur_norm',warengruppen_dummies)
+features = c('Temperatur_norm', 'Sonnenscheindauer_norm', 'Niederschlagsmenge_norm', 'KielerWoche', 'Ferien', 'Nach', 'Vor', 'Feiertag', warengruppen_dummies, wochentage_dummies, Bewoelkung_dummies)
 # Definition der Label-Variable (der abhaengigen Variable, die vorhergesagt werden soll) sowie
 label = 'Umsatz_norm'
 
