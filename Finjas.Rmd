@@ -231,7 +231,7 @@ library(imputeMissings)
 final <- impute(final)
 
       
-final_predict <- rbind(final[2116,], final[4232,], final[6348,], final[8410,], final[10526,])
+
 
 # Rekodierung von kategoriellen Variablen (zu Dummy-Variablen)
 dummy_list <- c("Warengruppe", "wochentag", "Bewoelkung")
@@ -255,6 +255,9 @@ features = c('Temperatur_norm', 'Niederschlagsmenge_norm', 'Sonnenscheindauer_no
 # Definition der Label-Variable (der abhaengigen Variable, die vorhergesagt werden soll) sowie
 label = 'Umsatz_norm'
 
+
+final_predict <- rbind(final_norm[2116,], final_norm[4232,], final_norm[6348,], final_norm[8410,], final_norm[10526,])
+final_predict <- final_predict[features]
 
 # Zufallszähler setzen, um die zufällige Partitionierung bei jedem Durchlauf gleich zu halten
 set.seed(1)
@@ -330,7 +333,7 @@ ggplot(data[-1,]) +
 ```{r}
 # Schätzung der (normierten) Preise für die Trainings- und Testdaten
 train_predictions_norm <- py$model$predict(train_dataset)
-test_predictions_norm <- py$model$predict(test_dataset)
+test_predictions_norm <- py$model$predict(final_predict)
 
 # Rückberechnung der normierten Preisschätzungen zu den tatsächlichen Preisschätzungen bzw. Preisen
 train_predictions <- (train_predictions_norm * norm_values_list$sd[1] ) + norm_values_list$mean[1]
@@ -342,7 +345,7 @@ test_actuals <- final$Umsatz[-train_ind]
 
 # Vergleich der Gütekriterien für die Traingings- und Testdaten
 cat(paste0("MAPE on the Training Data:\t", format(mape(train_actuals, train_predictions)*100, digits=3, nsmall=2)))
-cat(paste0("\nMAPE on the Test Data:\t\t", format(mape(test_actuals, test_predictions)*100, digits=3, nsmall=2)))
+#cat(paste0("\nMAPE on the Test Data:\t\t", format(mape(test_actuals, test_predictions)*100, digits=3, nsmall=2)))
 
 
 ```
@@ -378,22 +381,12 @@ ggplot(data_test[1:100,]) +
 
 ```{r}
 # Vorhersage für einen einzelnen Fall
-cat(paste0("Vorergesagter Preis:\t", format(test_predictions[100], digits=2, nsmall =0)))
-cat(paste0("\nTatsächlicher Preis:\t", test_actuals[100]))
+cat(paste0("Vorhergesagter Preis:\t", format(test_predictions, digits=2, nsmall =0)))
+#cat(paste0("\nTatsächlicher Preis:\t", test_actuals[100]))
 
 
 ```
 
 
-```{r}
-#predict 01.06.2018
-predictions_norm <- py$model$predict(final_predict)
 
-
-final_predict = as.data.frame(final_predict)
-pred_test <- predict(train_predictions, final_predict)
-
-
-
-```
 
