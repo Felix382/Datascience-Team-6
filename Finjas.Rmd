@@ -235,7 +235,7 @@ get.norm_values <- function (.data, select_columns = NULL) {
   result <- NULL
   for (col_name in select_columns) {
     mean <- mean(.data[[col_name]])
-    sd <- sd(.data[[col_name]] na.rm = TRUE)
+    sd <- sd(.data[[col_name]], na.rm = TRUE)
     result <- rbind (result, c(mean, sd))
   }
   result <- as.data.frame(result, stringsAsFactors = FALSE)
@@ -248,6 +248,8 @@ get.norm_values <- function (.data, select_columns = NULL) {
 
 
 ```{r}
+
+
 # Rekodierung von kategoriellen Variablen (zu Dummy-Variablen)
 dummy_list <- c("Warengruppe", "wochentag", "Bewoelkung")
 final_dummy = dummy_cols(final, dummy_list)
@@ -283,7 +285,7 @@ test_dataset = final_norm[-train_ind, features]
 train_labels = final_norm[train_ind, label]
 test_labels = final_norm[-train_ind, label]
 ```
-
+----> metrische, normalisierte Daten werden nicht in die Trainings und Test Datensätze aufgenommen (nur als NA) Ebenso werden diese schon nicht korrekt in den final_norm Datensatzübernommen
 
 ### Schätzung des Neuronalen Netzes
 ```{python}
