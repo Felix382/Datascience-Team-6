@@ -52,33 +52,7 @@ View(final)
 
 
 
-```{r}
-#Dummy für Wochentage, Stena Line fährt jeden Tag
 
-final%>%
-mutate(Dummy = ifelse(wochentag=='Dienstag', "1", "0"))
-
-final%>%
-lag(feiertage, k=1)
-  
-
-movag<-movavg(wetter$Temperatur, 7, type=c("s"))
-
-
-####UNDER CONSTRUCTION####
-#Moving Average
-# Function ma() calculates the moving average of order n
-ma <- function(x, n = 7) { filter(x, rep(1/n,n), sides = 7, method = "convolution") }
-
-for (Datum in final) {
-  
-}
-
-movingaverage <- data.frame(final$Datum, "Moving Average")
-# Calculate moving averages of order 7
-ma7 <- ma(final$Umsatz, 7)
-
-```
 
 Balkendiagramm Beispiel 
 ```{r}
@@ -198,6 +172,7 @@ library(readr)
 library(fastDummies)
 library(ggplot2)
 library(Metrics)
+library(dplyr)
 
 
 # Funktionsdefinitionen
@@ -249,6 +224,14 @@ get.norm_values <- function (.data, select_columns = NULL) {
 
 ```{r}
 
+# Imputierung
+
+library(imputeMissings)
+
+final <- impute(final)
+
+      
+final_predict <- rbind(final[2116,], final[4232,], final[6348,], final[8410,], final[10526,])
 
 # Rekodierung von kategoriellen Variablen (zu Dummy-Variablen)
 dummy_list <- c("Warengruppe", "wochentag", "Bewoelkung")
@@ -268,6 +251,7 @@ Bewoelkung_dummies = c('Bewoelkung_0','Bewoelkung_1','Bewoelkung_2','Bewoelkung_
 
 # Definition der Features (der unabhängigen Variablen auf deren Basis die Vorhersagen erzeugt werden sollen)
 features = c('Temperatur_norm', 'Niederschlagsmenge_norm', 'Sonnenscheindauer_norm', 'KielerWoche','Ferien', 'Nach', 'Vor', 'Feiertag', warengruppen_dummies, wochentage_dummies, Bewoelkung_dummies)
+#features = c( warengruppen_dummies)
 # Definition der Label-Variable (der abhaengigen Variable, die vorhergesagt werden soll) sowie
 label = 'Umsatz_norm'
 
@@ -285,7 +269,9 @@ test_dataset = final_norm[-train_ind, features]
 train_labels = final_norm[train_ind, label]
 test_labels = final_norm[-train_ind, label]
 ```
+
 ----> metrische, normalisierte Daten werden nicht in die Trainings und Test Datensätze aufgenommen (nur als NA) Ebenso werden diese schon nicht korrekt in den final_norm Datensatzübernommen
+
 
 ### Schätzung des Neuronalen Netzes
 ```{python}
@@ -310,7 +296,7 @@ model.compile(loss="mse",
 model.summary()
 
 # Schaetzung des Modells
-history = model.fit(r.train_dataset, r.train_labels, epochs=150, validation_split = 0.1, verbose=0)
+history = model.fit(r.train_dataset, r.train_labels, epochs=200, validation_split = 0.1, verbose=0)
 
 ```
 
@@ -397,3 +383,17 @@ cat(paste0("\nTatsächlicher Preis:\t", test_actuals[100]))
 
 
 ```
+
+
+```{r}
+#predict 01.06.2018
+predictions_norm <- py$model$predict(final_predict)
+
+
+final_predict = as.data.frame(final_predict)
+pred_test <- predict(train_predictions, final_predict)
+
+
+
+```
+
