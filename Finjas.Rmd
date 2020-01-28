@@ -234,7 +234,7 @@ norm_cols <- function (.data, norm_values = NULL) {
 get.norm_values <- function (.data, select_columns = NULL) {
   result <- NULL
   for (col_name in select_columns) {
-    mean <- mean(.data[[col_name]])
+    mean <- mean(.data[[col_name]], na.rm = TRUE)
     sd <- sd(.data[[col_name]], na.rm = TRUE)
     result <- rbind (result, c(mean, sd))
   }
@@ -255,7 +255,7 @@ dummy_list <- c("Warengruppe", "wochentag", "Bewoelkung")
 final_dummy = dummy_cols(final, dummy_list)
 
 # Standardisierung von metrischen Variablen
-norm_list <- c('Umsatz', 'Temperatur', 'Sonnenscheindauer', 'Niederschlagsmenge', 'KielerWoche')
+norm_list <- c('Umsatz', 'Temperatur', 'Niederschlagsmenge', 'Sonnenscheindauer')
 # Berechnung der Mittelwerte und Standardabweichungen der zu standardisierenden Variablen
 norm_values_list <- get.norm_values(final_dummy, norm_list)
 # Standardisierung der angegebenen metrischen Variablen
@@ -267,7 +267,7 @@ wochentage_dummies = c('wochentag_Sonntag','wochentag_Montag', 'wochentag_Dienst
 Bewoelkung_dummies = c('Bewoelkung_0','Bewoelkung_1','Bewoelkung_2','Bewoelkung_3','Bewoelkung_4','Bewoelkung_5','Bewoelkung_6','Bewoelkung_7','Bewoelkung_8')
 
 # Definition der Features (der unabhängigen Variablen auf deren Basis die Vorhersagen erzeugt werden sollen)
-features = c('Temperatur_norm', 'Sonnenscheindauer_norm', 'Niederschlagsmenge_norm', 'KielerWoche', 'Ferien', 'Nach', 'Vor', 'Feiertag', warengruppen_dummies, wochentage_dummies, Bewoelkung_dummies)
+features = c('Temperatur_norm', 'Niederschlagsmenge_norm', 'Sonnenscheindauer_norm', 'KielerWoche','Ferien', 'Nach', 'Vor', 'Feiertag', warengruppen_dummies, wochentage_dummies, Bewoelkung_dummies)
 # Definition der Label-Variable (der abhaengigen Variable, die vorhergesagt werden soll) sowie
 label = 'Umsatz_norm'
 
@@ -331,7 +331,7 @@ ggplot(data[-1,]) +
   scale_colour_manual( values = c("Training Loss"="blue", "Validation Loss"="red") ) +
   labs(title="Loss Function Values During Optimization") +
   xlab("Iteration Number") +
-  ylab("Loss") 
+  ylab("Loss")
 
 
 ```
